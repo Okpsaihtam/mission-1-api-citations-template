@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Citations - Mathias Celle</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Générateur de citations inspirantes utilisant l'API quotable.io">
+</head>
+<body>
+    <main class="container">
+        <header>
+            <h1>💬 Citations Inspirantes</h1>
+            <p class="subtitle">Découvrez des citations qui inspirent et motivent</p>
+        </header>
+        
+        <section class="citation-section" aria-live="polite">
+            <!-- Zone de chargement -->
+            <div id="loading" class="loading" aria-label="Chargement en cours">
+                <div class="spinner" role="status" aria-hidden="true"></div>
+                <p>Chargement d'une citation...</p>
+            </div>
+            
+            <!-- Zone citation (cachée au début) -->
+            <div id="citation-container" class="citation-container hidden">
+                <blockquote id="citation-text" class="citation-text" cite="https://quotable.io">
+                    <!-- La citation apparaîtra ici -->
+                </blockquote>
+                <cite id="citation-author" class="citation-author">
+                    <!-- L'auteur apparaîtra ici -->
+                </cite>
+            </div>
+            
+            <!-- Zone d'erreur (cachée au début) -->
+            <div id="error-container" class="error-container hidden" role="alert" aria-live="assertive">
+                <p class="error-message">
+                    ❌ <span id="error-text">Impossible de charger une citation. Vérifiez votre connexion.</span>
+                </p>
+                <button id="retry-btn" class="btn-retry">🔄 Réessayer</button>
+            </div>
+        </section>
+        
+        <section class="actions">
+            <button id="nouvelle-citation" class="btn-nouvelle" disabled aria-describedby="citation-help">
+                🔄 Nouvelle Citation
+            </button>
+            <p id="citation-help" class="sr-only">Cliquez pour charger une nouvelle citation aléatoire</p>
+        </section>
+
+        <!-- Section bonus optionnelle -->
+        <section id="bonus-features" class="bonus-section hidden">
+            <button id="partager-btn" class="btn-secondary">📤 Partager</button>
+            <button id="favoris-btn" class="btn-secondary">⭐ Ajouter aux favoris</button>
+        </section>
+        
+        <footer>
+            <p>Réalisé par <strong>Mathias Celle</strong> - BTS SIO SLAM</p>
+            <p>API fournie par <a href="https://quotable.io" target="_blank" rel="noopener">quotable.io</a></p>
+            <p><small>Projet pédagogique - Assignment 1</small></p>
+        </footer>
+    </main>
+    
+    <!-- Scripts chargés en fin pour optimiser les performances -->
+    <script src="script.js"></script>
+</body>
+</html>

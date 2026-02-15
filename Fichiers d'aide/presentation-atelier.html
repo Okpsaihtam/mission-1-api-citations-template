@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 Présentation Atelier API Citations</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, sans-serif; 
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; 
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .slide {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            max-width: 1000px;
+            animation: fadeIn 0.5s;
+        }
+        .slide.active { display: block; }
+        
+        h1 { font-size: 3rem; margin-bottom: 1rem; }
+        h2 { font-size: 2rem; margin-bottom: 1rem; color: #ffd700; }
+        h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #87ceeb; }
+        p, li { font-size: 1.2rem; line-height: 1.6; margin-bottom: 1rem; }
+        
+        .box {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem auto;
+            max-width: 800px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .code {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem auto;
+            max-width: 700px;
+            text-align: left;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+        
+        .code .comment { color: #6A9955; }
+        .code .keyword { color: #569CD6; }
+        .code .string { color: #CE9178; }
+        .code .function { color: #DCDCAA; }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 1rem; 
+            margin: 1rem 0; 
+        }
+        
+        .timeline { 
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin: 2rem 0; 
+        }
+        .timeline div { 
+            background: rgba(255,255,255,0.15); 
+            padding: 1rem; 
+            border-radius: 8px; 
+            text-align: center;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .comparison .bad { background: rgba(255,0,0,0.2); }
+        .comparison .good { background: rgba(0,255,0,0.2); }
+        
+        .concept-highlight {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+        
+        .steps {
+            text-align: left;
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .steps ol { margin-left: 2rem; }
+        .steps li { margin-bottom: 0.5rem; }
+        
+        .api-demo {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: monospace;
+        }
+        
+        .nav { 
+            position: fixed; 
+            bottom: 2rem; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            display: flex; 
+            gap: 1rem; 
+        }
+        .nav button {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .nav button:hover { background: rgba(255,255,255,0.3); }
+        .nav button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .counter { 
+            position: fixed; 
+            top: 2rem; 
+            right: 2rem; 
+            background: rgba(0,0,0,0.3); 
+            padding: 0.5rem 1rem; 
+            border-radius: 15px; 
+        }
+        
+        .progress { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 3px; 
+            background: rgba(255,255,255,0.2); 
+        }
+        .progress-fill { 
+            height: 100%; 
+            background: #ffd700; 
+            width: 0%; 
+            transition: width 0.3s; 
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { 
+            h1 { font-size: 2rem; } 
+            .grid, .comparison, .timeline { grid-template-columns: 1fr; } 
+            .code { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress"><div class="progress-fill" id="progress"></div></div>
+    <div class="counter" id="counter">1 / 10</div>
+    
+    <!-- Slide 1: Titre -->
+    <div class="slide active">
+        <h1>🚀 Générateur de Citations</h1>
+        <h2>Maîtriser les APIs REST avec JavaScript moderne</h2>
+        <div class="box">
+            <p>🎯 <strong>Mission :</strong> Créer une application web qui consomme une API REST</p>
+            <p>⏱️ <strong>Durée :</strong> 90 minutes</p>
+            <p>🎓 <strong>Public :</strong> BTS SIO SLAM 2ème année</p>
+        </div>
+        <div class="concept-highlight">
+            <p>💡 <strong>Concept Central :</strong> Communication client-serveur via HTTP/JSON</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Qu'est-ce qu'une API ? -->
+    <div class="slide">
+        <h2>🌐 Qu'est-ce qu'une API REST ?</h2>
+        <div class="box">
+            <h3>🏪 Analogie du Restaurant</h3>
+            <p><strong>API = Serveur</strong> qui prend vos commandes et vous apporte ce que vous demandez</p>
+        </div>
+        
+        <div class="grid">
+            <div class="box">
+                <h3>👤 Client (Votre App)</h3>
+                <p>• Fait une <strong>requête HTTP</strong></p>
+                <p>• Spécifie ce qu'il veut</p>
+                <p>• Attend la <strong>réponse</strong></p>
+            </div>
+            <div class="box">
+                <h3>🖥️ Serveur (API)</h3>
+                <p>• Reçoit la <strong>requête</strong></p>
+                <p>• Traite la demande</p>
+                <p>• Renvoie des <strong>données JSON</strong></p>
+            </div>
+        </div>
+        
+        <div class="api-demo">
+            <p><strong>🔗 URL :</strong> https://api.quotable.io/random</p>
+            <p><strong>📥 Réponse :</strong></p>
+            <div class="code">
+{
+  <span class="string">"content"</span>: <span class="string">"Le succès c'est d'aller d'échec en échec..."</span>,
+  <span class="string">"author"</span>: <span class="string">"Winston Churchill"</span>,
+  <span class="string">"length"</span>: <span class="keyword">65</span>
+}
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: REST et HTTP -->
+    <div class="slide">
+        <h2>📡 Protocole HTTP et REST</h2>
+        
+        <div class="box">
+            <h3>🔄 REST = Representational State Transfer</h3>
+            <p>Architecture pour les services web basée sur HTTP</p>
+        </div>
+        
+        <div class="grid">
+            <div class="box">
+                <h3>📋 Méthodes HTTP</h3>
+                <p><strong>GET</strong> : Récupérer des données</p>
+                <p><strong>POST</strong> : Créer des données</p>
+                <p><strong>PUT</strong> : Modifier des données</p>
+                <p><strong>DELETE</strong> : Supprimer des données</p>
+            </div>
+            <div class="box">
+                <h3>📊 Codes de Statut</h3>
+                <p><strong style="color: #4ade80;">200</strong> : Succès ✅</p>
+                <p><strong style="color: #fbbf24;">404</strong> : Non trouvé ⚠️</p>
+                <p><strong style="color: #ef4444;">500</strong> : Erreur serveur ❌</p>
+            </div>
+        </div>
+        
+        <div class="concept-highlight">
+            <p>💡 <strong>Dans notre projet :</strong> GET https://api.quotable.io/random → Citation aléatoire</p>
+        </div>
+    </div>
+
+    <!-- Slide 4: L'API Fetch -->
+    <div class="slide">
+        <h2>🎣 L'API Fetch JavaScript</h2>
+        
+        <div class="box">
+            <h3>🚀 fetch() = "Aller chercher des données"</h3>
+            <p>Méthode moderne pour les appels HTTP depuis JavaScript</p>
+        </div>
+        
+        <div class="comparison">
+            <div class="box bad">
+                <h3>❌ Ancienne Méthode</h3>
+                <div class="code">
+<span class="comment">// XMLHttpRequest - Complexe</span>
+<span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();
+xhr.open(<span class="string">'GET'</span>, url);
+xhr.onreadystatechange = <span class="keyword">function</span>() {
+  <span class="keyword">if</span> (xhr.readyState === 4) {
+    <span class="comment">// Traitement...</span>
+  }
+};
+xhr.send();
+                </div>
+            </div>
+            <div class="box good">
+                <h3>✅ Méthode Moderne</h3>
+                <div class="code">
+<span class="comment">// fetch() - Simple et puissant</span>
+<span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(url);
+<span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+<span class="comment">// C'est tout ! ✨</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="steps">
+            <h3>📋 Étapes d'un Appel fetch()</h3>
+            <ol>
+                <li><strong>Appel :</strong> <code>fetch(url)</code> retourne une Promise</li>
+                <li><strong>Réponse :</strong> Objet Response avec statut et headers</li>
+                <li><strong>Parsing :</strong> <code>.json()</code> convertit en objet JavaScript</li>
+                <li><strong>Utilisation :</strong> Données prêtes à être affichées</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Slide 5: Async/Await -->
+    <div class="slide">
+        <h2>⏳ JavaScript Asynchrone : async/await</h2>
+        
+        <div class="box">
+            <h3>🎭 Le Problème de l'Asynchrone</h3>
+            <p>Internet n'est pas instantané ! Il faut <strong>attendre</strong> les réponses sans bloquer l'interface.</p>
+        </div>
+        
+        <div class="comparison">
+            <div class="box bad">
+                <h3>❌ Synchrone (Bloquant)</h3>
+                <div class="code">
+<span class="comment">// ❌ Ceci ne fonctionne pas !</span>
+<span class="keyword">const</span> response = <span class="function">fetch</span>(url);
+<span class="keyword">const</span> data = response.<span class="function">json</span>();
+<span class="comment">// ⚠️ data sera undefined</span>
+                </div>
+                <p>😵 L'interface se fige</p>
+            </div>
+            <div class="box good">
+                <h3>✅ Asynchrone (Non-bloquant)</h3>
+                <div class="code">
+<span class="comment">// ✅ Avec async/await</span>
+<span class="keyword">async function</span> <span class="function">getData</span>() {
+  <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(url);
+  <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+  <span class="keyword">return</span> data;
+}
+                </div>
+                <p>😊 Interface fluide</p>
+            </div>
+        </div>
+        
+        <div class="concept-highlight">
+            <p>💡 <strong>async/await</strong> = Écrire du code asynchrone qui ressemble à du code synchrone</p>
+        </div>
+    </div>
+
+    <!-- Slide 6: Manipulation du DOM -->
+    <div class="slide">
+        <h2>🎨 Manipulation du DOM</h2>
+        
+        <div class="box">
+            <h3>🏗️ DOM = Document Object Model</h3>
+            <p>Représentation de votre page HTML que JavaScript peut modifier en temps réel</p>
+        </div>
+        
+        <div class="grid">
+            <div class="box">
+                <h3>🎯 Sélection d'Éléments</h3>
+                <div class="code">
+<span class="comment">// Par ID</span>
+<span class="keyword">const</span> element = document
+  .<span class="function">getElementById</span>(<span class="string">'citation-text'</span>);
+
+<span class="comment">// Par classe</span>
+<span class="keyword">const</span> elements = document
+  .<span class="function">getElementsByClassName</span>(<span class="string">'box'</span>);
+                </div>
+            </div>
+            <div class="box">
+                <h3>✏️ Modification de Contenu</h3>
+                <div class="code">
+<span class="comment">// Changer le texte</span>
+element.<span class="function">textContent</span> = <span class="string">'Nouveau texte'</span>;
+
+<span class="comment">// Gérer les classes CSS</span>
+element.classList.<span class="function">add</span>(<span class="string">'visible'</span>);
+element.classList.<span class="function">remove</span>(<span class="string">'hidden'</span>);
+                </div>
+            </div>
+        </div>
+        
+        <div class="steps">
+            <h3>📋 Processus dans Notre Projet</h3>
+            <ol>
+                <li><strong>Récupérer :</strong> Citation depuis l'API</li>
+                <li><strong>Sélectionner :</strong> Élément HTML pour l'affichage</li>
+                <li><strong>Modifier :</strong> textContent avec la citation</li>
+                <li><strong>Styliser :</strong> Classes CSS pour l'animation</li>
+            </ol>
+        </div>
+        
+        <div class="box">
+            <h3>🔐 Sécurité : textContent vs innerHTML</h3>
+            <p><strong>textContent</strong> = Sécurisé (évite les injections XSS)</p>
+            <p><strong>innerHTML</strong> = Dangereux avec données utilisateur</p>
+        </div>
+    </div>
+
+    <!-- Slide 7: Gestion d'Erreurs -->
+    <div class="slide">
+        <h2>⚠️ Gestion Robuste des Erreurs</h2>
+        
+        <div class="box">
+            <h3>🛡️ Pourquoi Gérer les Erreurs ?</h3>
+            <p>Internet est imprévisible : connexion coupée, serveur en panne, API indisponible...</p>
+        </div>
+        
+        <div class="comparison">
+            <div class="box bad">
+                <h3>❌ Sans Gestion d'Erreurs</h3>
+                <div class="code">
+<span class="keyword">const</span> data = <span class="keyword">await</span> <span class="function">fetch</span>(url);
+<span class="comment">// 💥 Crash si problème réseau</span>
+                </div>
+                <p>😡 Utilisateur frustré</p>
+            </div>
+            <div class="box good">
+                <h3>✅ Avec try/catch</h3>
+                <div class="code">
+<span class="keyword">try</span> {
+  <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(url);
+  <span class="keyword">if</span> (!response.ok) {
+    <span class="keyword">throw new</span> <span class="function">Error</span>(<span class="string">'Erreur réseau'</span>);
+  }
+  <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+} <span class="keyword">catch</span> (error) {
+  <span class="function">console.error</span>(<span class="string">'Problème:'</span>, error);
+  <span class="comment">// Afficher message utilisateur</span>
+}
+                </div>
+                <p>😊 Expérience fluide</p>
+            </div>
+        </div>
+        
+        <div class="steps">
+            <h3>📋 Types d'Erreurs à Gérer</h3>
+            <ol>
+                <li><strong>Réseau :</strong> Pas de connexion internet</li>
+                <li><strong>HTTP :</strong> 404 (non trouvé), 500 (erreur serveur)</li>
+                <li><strong>JSON :</strong> Réponse malformée</li>
+                <li><strong>Application :</strong> Données manquantes</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Slide 8: Outils de Débogage -->
+    <div class="slide">
+        <h2>🔧 Outils de Débogage : F12</h2>
+        
+        <div class="box">
+            <h3>🎯 DevTools = Votre Meilleur Ami</h3>
+            <p>Outils intégrés au navigateur pour comprendre et déboguer votre code</p>
+        </div>
+        
+        <div class="grid">
+            <div class="box">
+                <h3>💬 Console</h3>
+                <p>• <strong>console.log()</strong> : Messages de debug</p>
+                <p>• <strong>Erreurs</strong> : Stack traces détaillées</p>
+                <p>• <strong>Tests</strong> : Exécution de code en direct</p>
+                <div class="code">
+console.log(<span class="string">'Citation reçue:'</span>, data);
+console.error(<span class="string">'Erreur API:'</span>, error);
+                </div>
+            </div>
+            <div class="box">
+                <h3>🌐 Network</h3>
+                <p>• <strong>Requêtes HTTP</strong> : Toutes les communications</p>
+                <p>• <strong>Codes de statut</strong> : 200, 404, 500...</p>
+                <p>• <strong>Contenu</strong> : Voir les réponses JSON</p>
+                <p>• <strong>Timing</strong> : Mesurer les performances</p>
+            </div>
+        </div>
+        
+        <div class="steps">
+            <h3>📋 Workflow de Debug</h3>
+            <ol>
+                <li><strong>F12</strong> → Ouvrir les DevTools</li>
+                <li><strong>Console</strong> → Voir les messages et erreurs</li>
+                <li><strong>Network</strong> → Vérifier les appels API</li>
+                <li><strong>Elements</strong> → Inspecter le DOM</li>
+                <li><strong>Sources</strong> → Points d'arrêt dans le code</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Slide 9: Planning -->
+    <div class="slide">
+        <h2>📅 Planning de l'Atelier</h2>
+        
+        <div class="timeline">
+            <div>
+                <h3>🚀 Phase 1</h3>
+                <p><strong>15 min</strong></p>
+                <p>Concepts et API</p>
+                <small>Cette présentation + test API</small>
+            </div>
+            <div>
+                <h3>💻 Phase 2</h3>
+                <p><strong>25 min</strong></p>
+                <p>Fetch & DOM</p>
+                <small>Étapes 1-2 du guide</small>
+            </div>
+            <div>
+                <h3>🛡️ Phase 3</h3>
+                <p><strong>20 min</strong></p>
+                <p>Gestion erreurs</p>
+                <small>Étapes 3-4 du guide</small>
+            </div>
+            <div>
+                <h3>🧪 Phase 4</h3>
+                <p><strong>15 min</strong></p>
+                <p>Tests & Debug</p>
+                <small>Validation et déploiement</small>
+            </div>
+            <div>
+                <h3>📊 Phase 5</h3>
+                <p><strong>15 min</strong></p>
+                <p>Évaluation</p>
+                <small>QCM et auto-évaluation</small>
+            </div>
+        </div>
+        
+        <div class="box">
+            <h3>🎯 Objectifs de Chaque Phase</h3>
+            <p><strong>Phase 1 :</strong> Comprendre les concepts théoriques</p>
+            <p><strong>Phase 2 :</strong> Première API fonctionnelle</p>
+            <p><strong>Phase 3 :</strong> Application robuste</p>
+            <p><strong>Phase 4 :</strong> Code de qualité professionnelle</p>
+            <p><strong>Phase 5 :</strong> Validation des acquis</p>
+        </div>
+    </div>
+
+    <!-- Slide 10: À vos marques ! -->
+    <div class="slide">
+        <h1>🏁 À vos marques !</h1>
+        
+        <div class="box">
+            <h2>🚀 Prêts pour l'aventure API ?</h2>
+            <p>Vous avez maintenant tous les concepts pour réussir cette mission</p>
+        </div>
+        
+        <div class="grid">
+            <div class="box">
+                <h3>📚 Concepts Acquis</h3>
+                <p>✅ API REST et HTTP</p>
+                <p>✅ fetch() et async/await</p>
+                <p>✅ Manipulation DOM</p>
+                <p>✅ Gestion d'erreurs</p>
+                <p>✅ Outils de debug</p>
+            </div>
+            <div class="box">
+                <h3>🎯 Prochaines Étapes</h3>
+                <p>1. Ouvrir le guide pratique</p>
+                <p>2. Compléter le code étape par étape</p>
+                <p>3. Tester et déboguer</p>
+                <p>4. Déployer sur GitHub Pages</p>
+                <p>5. Évaluer vos acquis</p>
+            </div>
+        </div>
+        
+        <div class="concept-highlight">
+            <h2>💪 Let's Code!</h2>
+            <p>🎯 <strong>Rendez-vous dans instructions_etudiant.md</strong></p>
+        </div>
+    </div>
+
+    <div class="nav">
+        <button id="prev" onclick="changeSlide(-1)">← Précédent</button>
+        <button onclick="toggleFullscreen()">🔍 Plein écran</button>
+        <button id="next" onclick="changeSlide(1)">Suivant →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function updateSlide() {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('counter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            document.getElementById('progress').style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+            
+            document.getElementById('prev').disabled = currentSlide === 0;
+            document.getElementById('next').disabled = currentSlide === totalSlides - 1;
+            
+            if (currentSlide === totalSlides - 1) {
+                document.getElementById('next').textContent = '🏁 Terminé';
+            } else {
+                document.getElementById('next').textContent = 'Suivant →';
+            }
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+            updateSlide();
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Navigation clavier
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+            if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+        });
+
+        updateSlide();
+    </script>
+</body>
+</html>

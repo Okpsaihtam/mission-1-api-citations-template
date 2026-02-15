@@ -1,0 +1,141 @@
+# .github/workflows/classroom.yml
+# Workflow autograding pour Mission API Citations + GitHub Pages
+
+name: Autograding Tests
+
+on:
+  - push
+  - workflow_dispatch
+  - repository_dispatch
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Test 1: Vérification des fichiers obligatoires
+    - name: Test fichiers obligatoires
+      id: test-fichiers
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Fichiers obligatoires présents'
+        setup-command: ''
+        command: 'test -f index.html && test -f style.css && test -f script.js && test -f evaluation.json'
+        timeout: 1
+        max-score: 2
+
+    # Test 2: Vérification QCM complété
+    - name: Test QCM evaluation complété
+      id: test-qcm
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'QCM evaluation complété'
+        setup-command: ''
+        command: 'test -s evaluation.json && grep -q "\"nom\"" evaluation.json && grep -q "\"reponse\"" evaluation.json && ! grep -q "\"reponse\": \"\"" evaluation.json'
+        timeout: 1
+        max-score: 3
+
+    # Test 3: Vérification GitHub Pages (adapté pour "mission")
+    - name: Test GitHub Pages accessible
+      id: test-pages
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'GitHub Pages accessible'
+        setup-command: 'sleep 30'
+        command: 'curl -s -o /dev/null -w "%{http_code}" "https://${{ github.actor }}.github.io/mission-1-api-citations-${{ github.actor }}/" | grep -q "200"'
+        timeout: 2
+        max-score: 5
+
+    # Test bonus: Validation HTML (optionnel)
+    - name: Test validation HTML
+      id: test-html
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'HTML valide'
+        setup-command: 'npm install -g html-validate'
+        command: 'html-validate index.html || true'
+        timeout: 1
+        max-score: 0
+      continue-on-error: true
+
+    # Test bonus: Vérification API JavaScript (optionnel)
+    - name: Test JavaScript API
+      id: test-js-api
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Code JavaScript API'
+        setup-command: ''
+        command: 'grep -q "fetch" script.js && grep -q "quotable" script.js'
+        timeout: 1
+        max-score: 0
+      continue-on-error: true
+
+    # Rapport final des résultats
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEST-FICHIERS_RESULTS: "${{ steps.test-fichiers.outputs.result }}"
+        TEST-QCM_RESULTS: "${{ steps.test-qcm.outputs.result }}"
+        TEST-PAGES_RESULTS: "${{ steps.test-pages.outputs.result }}"
+        TEST-HTML_RESULTS: "${{ steps.test-html.outputs.result }}"
+        TEST-JS-API_RESULTS: "${{ steps.test-js-api.outputs.result }}"
+      with:
+        runners: test-fichiers,test-qcm,test-pages,test-html,test-js-api
+
+    # Notification des résultats
+    - name: Résultats des tests
+      if: always()
+      run: |
+        echo "🎯 Tests Mission API Citations terminés"
+        echo "📊 Fichiers obligatoires: ${{ steps.test-fichiers.outputs.points }}/${{ steps.test-fichiers.outputs.max-points }} points"
+        echo "📝 QCM evaluation: ${{ steps.test-qcm.outputs.points }}/${{ steps.test-qcm.outputs.max-points }} points"
+        echo "🌐 GitHub Pages: ${{ steps.test-pages.outputs.points }}/${{ steps.test-pages.outputs.max-points }} points"
+        echo "✅ Total automatique: ${{ steps.test-fichiers.outputs.points + steps.test-qcm.outputs.points + steps.test-pages.outputs.points }}/10 points"
+
+    # Création d'un artifact avec les résultats (pour votre collecte)
+    - name: Sauvegarde résultats pour collecte
+      if: always()
+      run: |
+        mkdir -p results
+        echo "{
+          \"student\": \"${{ github.actor }}\",
+          \"repository\": \"${{ github.repository }}\",
+          \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",
+          \"tests\": {
+            \"fichiers\": {
+              \"score\": ${{ steps.test-fichiers.outputs.points || 0 }},
+              \"max_score\": ${{ steps.test-fichiers.outputs.max-points || 2 }},
+              \"status\": \"${{ steps.test-fichiers.outputs.result || 'failed' }}\"
+            },
+            \"qcm\": {
+              \"score\": ${{ steps.test-qcm.outputs.points || 0 }},
+              \"max_score\": ${{ steps.test-qcm.outputs.max-points || 3 }},
+              \"status\": \"${{ steps.test-qcm.outputs.result || 'failed' }}\"
+            },
+            \"pages\": {
+              \"score\": ${{ steps.test-pages.outputs.points || 0 }},
+              \"max_score\": ${{ steps.test-pages.outputs.max-points || 5 }},
+              \"status\": \"${{ steps.test-pages.outputs.result || 'failed' }}\"
+            }
+          },
+          \"total_score\": $(( ${{ steps.test-fichiers.outputs.points || 0 }} + ${{ steps.test-qcm.outputs.points || 0 }} + ${{ steps.test-pages.outputs.points || 0 }} )),
+          \"max_total_score\": 10,
+          \"pages_url\": \"https://${{ github.actor }}.github.io/mission-1-api-citations-${{ github.actor }}/\"
+        }" > results/autograding-results.json
+
+    - name: Upload résultats
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: autograding-results
+        path: results/autograding-results.json
+        retention-days: 30

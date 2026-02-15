@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Évaluation Mission 1 - Générateur de Citations</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, sans-serif; 
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #333; 
+            padding: 1rem; 
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 16px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+            overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, #3b82f6, #1e40af); 
+            color: white; 
+            padding: 2rem; 
+            text-align: center; 
+            position: relative;
+        }
+        .header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .header p { font-size: 1.1rem; opacity: 0.9; }
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: #ffd700;
+            transition: width 0.3s ease;
+        }
+        .content { padding: 2rem; }
+        .section { 
+            margin-bottom: 2rem; 
+            padding: 1.5rem; 
+            background: #f8fafc; 
+            border-radius: 12px; 
+            border-left: 4px solid #3b82f6;
+        }
+        .section h2 { 
+            color: #1f2937; 
+            margin-bottom: 1rem; 
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section h3 {
+            color: #3b82f6; 
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.1rem;
+        }
+        .alert { 
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe); 
+            color: #1e40af; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            margin-bottom: 1.5rem;
+            border: 1px solid #93c5fd;
+            position: relative;
+        }
+        .alert::before {
+            content: "ℹ️";
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        .form-row { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 1rem; 
+            margin-bottom: 1rem; 
+        }
+        .form-group { margin-bottom: 1rem; }
+        label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 0.5rem; 
+            color: #374151; 
+        }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 0.875rem; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            transition: all 0.2s;
+            background: white;
+        }
+        input:focus, select:focus, textarea:focus { 
+            outline: none; 
+            border-color: #3b82f6; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        textarea { 
+            min-height: 80px; 
+            resize: vertical; 
+            font-family: inherit;
+        }
+        .btn { 
+            padding: 1rem 2rem; 
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        .btn-success { 
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .btn-success:hover { 
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+        .score { 
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            text-align: center; 
+            font-weight: 700; 
+            color: #1e40af; 
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            border: 2px solid #93c5fd;
+        }
+        .score-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .score-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .checkbox-group { display: grid; gap: 0.75rem; }
+        .outils-multi-col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+        .checkbox-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem; 
+            padding: 1rem; 
+            background: white; 
+            border-radius: 8px; 
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #e5e7eb;
+        }
+        .checkbox-item:hover {
+            border-color: #3b82f6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .checkbox-item input[type="checkbox"] { 
+            width: auto; 
+            margin: 0;
+            transform: scale(1.2);
+        }
+        .qcm-question { 
+            background: white;
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            margin-bottom: 1.5rem; 
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        .qcm-question:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .qcm-question h4 { 
+            color: #1f2937; 
+            margin-bottom: 1rem; 
+            font-size: 1.1rem; 
+            line-height: 1.4;
+            font-weight: 600;
+        }
+        .compact-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .radio-group { 
+            display: grid; 
+            gap: 0.5rem; 
+            margin: 1rem 0; 
+        }
+        .radio-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem; 
+            padding: 0.875rem; 
+            background: #f8fafc; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 0.95rem;
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        .radio-item:hover { 
+            background: #f0f9ff; 
+            border-color: #3b82f6;
+        }
+        .radio-item input[type="radio"] { 
+            width: auto; 
+            margin: 0;
+            transform: scale(1.1);
+        }
+        .actions { 
+            display: flex; 
+            gap: 1rem; 
+            justify-content: center; 
+            padding: 2rem; 
+            background: #f8fafc;
+            flex-wrap: wrap;
+        }
+        .json-output { 
+            background: #1e293b; 
+            color: #f1f5f9; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            font-family: 'JetBrains Mono', 'Fira Code', monospace; 
+            font-size: 0.875rem; 
+            max-height: 400px; 
+            overflow-y: auto; 
+            white-space: pre-wrap; 
+            margin-top: 1rem;
+            border: 2px solid #334155;
+        }
+        .etape-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        .etape-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .etape-item h4 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .concepts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .help-tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        .help-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1f2937;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .help-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .validation-message {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            display: none;
+        }
+        .validation-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+        .validation-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .auto-save-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: #10b981;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+        .instructions-box {
+            background: linear-gradient(135deg, #fef3c7, #fbbf24);
+            color: #92400e;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border: 2px solid #f59e0b;
+        }
+        .instructions-box h3 {
+            color: #92400e;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        .instructions-step {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #f59e0b;
+        }
+        .instructions-step h4 {
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) { 
+            .form-row { grid-template-columns: 1fr; } 
+            .actions { flex-direction: column; align-items: center; }
+            .compact-options { grid-template-columns: 1fr; }
+            .concepts-grid { grid-template-columns: 1fr; }
+            .outils-multi-col { grid-template-columns: 1fr; }
+            .score-details { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2rem; }
+            .container { margin: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="auto-save-indicator" id="autoSaveIndicator">💾 Sauvegardé automatiquement</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>📊 Évaluation Mission 1</h1>
+            <p>Générateur de Citations avec API REST - Auto-évaluation Interactive</p>
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="content">
+            <!-- Info Section -->
+            <div class="alert">
+                <strong>Guide d'utilisation :</strong> 
+                Complétez chaque section à votre rythme. Vos réponses sont sauvegardées automatiquement. 
+                Les informations étudiant (nom, prénom, repository) seront remplies automatiquement lors de la collecte des résultats.
+            </div>
+
+            <!-- Section QCM -->
+            <div class="section" id="qcm-section">
+                <h2>📚 <span>Questionnaire de Validation</span> 
+                    <span class="help-tooltip">❓
+                        <span class="tooltip-text">Testez vos connaissances acquises pendant la mission</span>
+                    </span>
+                </h2>
+                <p style="margin-bottom: 1.5rem; color: #6b7280;">
+                    <strong>Instructions :</strong> Sélectionnez la meilleure réponse pour chaque question.
+                </p>
+                <div id="qcm-container"></div>
+            </div>
+
+            <!-- Section Technique -->
+            <div class="section" id="technical-section">
+                <h2>⚡ <span>Auto-évaluation Technique</span>
+                    <span class="help-tooltip">❓
+                        <span class="tooltip-text">Cochez les fonctionnalités que vous avez réussies</span>
+                    </span>
+                </h2>
+                <h3>🔧 Fonctionnalités Obligatoires (15 pts)</h3>
+                <div class="checkbox-group" id="obligatoire-container"></div>
+                
+                <h3>🌟 Fonctionnalités Bonus (9 pts)</h3>
+                <div class="checkbox-group" id="bonus-container"></div>
+                
+                <div class="score" id="score-display">
+                    <div>Score Total: 0/42 points (0/20)</div>
+                    <div class="score-details" id="score-details"></div>
+                </div>
+            </div>
+
+            <!-- Section Progression -->
+            <div class="section" id="progression-section">
+                <h2>📈 <span>Progression et Apprentissage</span>
+                    <span class="help-tooltip">❓
+                        <span class="tooltip-text">Réflexion sur votre parcours d'apprentissage</span>
+                    </span>
+                </h2>
+                
+                <h3>🎯 Étapes Réalisées</h3>
+                <div id="etapes-container"></div>
+                
+                <h3>💡 Concepts Techniques Maîtrisés</h3>
+                <div class="concepts-grid" id="concepts-container"></div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>🤔 Concepts à approfondir</label>
+                        <textarea id="concepts_a_revoir" placeholder="Ex: async/await, gestion d'erreurs, CSS Grid..." maxlength="500"></textarea>
+                        <small style="color: #6b7280;">Listez les sujets que vous souhaitez retravailler</small>
+                    </div>
+                    <div class="form-group">
+                        <label>🚧 Principales difficultés rencontrées</label>
+                        <textarea id="difficultes_rencontrees" placeholder="Ex: Compréhension des Promises, debug des erreurs API..." maxlength="500"></textarea>
+                        <small style="color: #6b7280;">Décrivez vos blocages principaux</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>💪 Points forts identifiés</label>
+                        <textarea id="points_forts_identifies" placeholder="Ex: Logique JavaScript, résolution de problèmes..." maxlength="500"></textarea>
+                        <small style="color: #6b7280;">Vos facilités et réussites</small>
+                    </div>
+                    <div class="form-group">
+                        <label>🎯 Objectifs d'amélioration</label>
+                        <textarea id="ameliorations_souhaitees" placeholder="Ex: Maîtriser les APIs plus complexes, améliorer le CSS..." maxlength="500"></textarea>
+                        <small style="color: #6b7280;">Ce sur quoi vous voulez progresser</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Réflexion -->
+            <div class="section" id="reflexion-section">
+                <h2>💭 <span>Réflexion Pédagogique</span>
+                    <span class="help-tooltip">❓
+                        <span class="tooltip-text">Votre retour sur l'exercice pour améliorer la formation</span>
+                    </span>
+                </h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>⏱️ Temps total nécessaire</label>
+                        <select id="temps_total_necessaire">
+                            <option value="">Sélectionner...</option>
+                            <option value="< 30 min">Moins de 30 minutes</option>
+                            <option value="30-60 min">30 à 60 minutes</option>
+                            <option value="60-90 min">60 à 90 minutes</option>
+                            <option value="90-120 min">90 à 120 minutes</option>
+                            <option value="> 120 min">Plus de 120 minutes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>😊 Niveau de satisfaction général</label>
+                        <select id="niveau_satisfaction">
+                            <option value="">Évaluer...</option>
+                            <option value="Très insatisfait">😞 Très insatisfait</option>
+                            <option value="Insatisfait">😕 Insatisfait</option>
+                            <option value="Neutre">😐 Neutre</option>
+                            <option value="Satisfait">😊 Satisfait</option>
+                            <option value="Très satisfait">😃 Très satisfait</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>🔥 Étape la plus difficile</label>
+                        <select id="etape_la_plus_difficile">
+                            <option value="">Sélectionner...</option>
+                            <option value="Configuration initiale">Configuration initiale (Git, VS Code)</option>
+                            <option value="Appel API">Comprendre et implémenter fetch()</option>
+                            <option value="Manipulation DOM">Sélection et modification d'éléments</option>
+                            <option value="Gestion d'erreurs">Try/catch et messages utilisateur</option>
+                            <option value="CSS Responsive">Adaptation mobile et design</option>
+                            <option value="Git/GitHub">Workflow Git et commits</option>
+                            <option value="GitHub Pages">Déploiement et configuration</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>✨ Étape la plus intéressante</label>
+                        <select id="etape_la_plus_interessante">
+                            <option value="">Sélectionner...</option>
+                            <option value="Découverte API">Premier contact avec les APIs</option>
+                            <option value="JavaScript asynchrone">Async/await et Promises</option>
+                            <option value="Design CSS">Création de l'interface</option>
+                            <option value="Interactivité">Event listeners et interactions</option>
+                            <option value="Déploiement">Mise en ligne du projet</option>
+                            <option value="Gestion d'erreurs">Robustesse de l'application</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📖 Utilité des commentaires et guides</label>
+                        <select id="utilite_des_commentaires">
+                            <option value="">Évaluer...</option>
+                            <option value="Inutiles">😤 Inutiles (trop verbeux)</option>
+                            <option value="Peu utiles">😕 Peu utiles</option>
+                            <option value="Utiles">😊 Utiles</option>
+                            <option value="Très utiles">😃 Très utiles</option>
+                            <option value="Indispensables">🤩 Indispensables</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>📋 Clarté des instructions</label>
+                        <select id="clarte_des_instructions">
+                            <option value="">Évaluer...</option>
+                            <option value="Très confuses">😵 Très confuses</option>
+                            <option value="Confuses">😕 Parfois confuses</option>
+                            <option value="Correctes">😐 Correctes</option>
+                            <option value="Claires">😊 Claires</option>
+                            <option value="Très claires">🤩 Très claires</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>👥 Recommanderiez-vous cet exercice à d'autres étudiants ?</label>
+                    <select id="recommanderiez_exercice">
+                        <option value="">Donner votre avis...</option>
+                        <option value="Certainement pas">❌ Certainement pas</option>
+                        <option value="Probablement pas">😕 Probablement pas</option>
+                        <option value="Peut-être">🤷 Peut-être</option>
+                        <option value="Probablement">😊 Probablement</option>
+                        <option value="Certainement">✅ Certainement</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>💡 Suggestions d'amélioration</label>
+                    <textarea id="suggestions_amelioration" placeholder="Comment pourrait-on améliorer cet exercice pour les prochains étudiants ?" maxlength="1000"></textarea>
+                    <small style="color: #6b7280;">Vos idées pour optimiser la formation</small>
+                </div>
+            </div>
+
+            <!-- Section Méta-données -->
+            <div class="section" id="meta-section">
+                <h2>📋 <span>Informations Complémentaires</span></h2>
+                <div class="form-group">
+                    <label>⏱️ Durée de cette évaluation (minutes)</label>
+                    <input type="number" id="duree_evaluation" placeholder="Temps passé sur ce formulaire" min="1" max="120">
+                    <small style="color: #6b7280;">Estimation du temps pour remplir ce formulaire</small>
+                </div>
+
+                <div class="form-group">
+                    <label>🛠️ Outils et ressources utilisés pendant la mission</label>
+                    <div class="checkbox-group outils-multi-col" id="outils-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Observations générales</label>
+                    <textarea id="observations" placeholder="Commentaires libres sur votre expérience d'apprentissage..." maxlength="1000"></textarea>
+                    <small style="color: #6b7280;">Tout ce que vous souhaitez partager</small>
+                </div>
+            </div>
+
+            <!-- Section Export -->
+            <div class="section" id="export-section">
+                <h2>💾 <span>Export des Résultats</span></h2>
+                <p style="margin-bottom: 1rem; color: #6b7280;">
+                    Générez le fichier JSON avec vos réponses pour l'évaluation finale.
+                </p>
+                <div class="json-output" id="json-output">
+                    Cliquez sur "Générer JSON" pour voir le résultat de votre évaluation...
+                </div>
+                
+                <!-- Instructions de traitement -->
+                <div class="instructions-box">
+                    <h3>📋 Instructions de Finalisation</h3>
+                    
+                    <div class="instructions-step">
+                        <h4>1. 📊 Générer et Copier le JSON</h4>
+                        <p>• Cliquez sur <strong>"Générer JSON"</strong> pour créer votre fichier d'évaluation</p>
+                        <p>• Cliquez sur <strong>"Copier JSON"</strong> pour le mettre dans votre presse-papiers</p>
+                        <p>• Le JSON contient toutes vos réponses et votre auto-évaluation</p>
+                    </div>
+                    
+                    <div class="instructions-step">
+                        <h4>2. 💾 Sauvegarder dans votre Repository</h4>
+                        <p>• Ouvrez VS Code dans votre projet</p>
+                        <p>• Créez un fichier nommé <strong><code>evaluation.json</code></strong> à la racine</p>
+                        <p>• Collez le contenu JSON copié dans ce fichier</p>
+                        <p>• Sauvegardez le fichier</p>
+                    </div>
+                    
+                    <div class="instructions-step">
+                        <h4>3. 📤 Commit et Push Final</h4>
+                        <p>• Ouvrez le terminal dans VS Code</p>
+                        <p>• Tapez : <code>git add evaluation.json</code></p>
+                        <p>• Tapez : <code>git commit -m "feat: ajout évaluation finale"</code></p>
+                        <p>• Tapez : <code>git push origin main</code></p>
+                    </div>
+                    
+                    <div class="instructions-step">
+                        <h4>4. ✅ Vérification Finale</h4>
+                        <p>• Vérifiez que <strong>evaluation.json</strong> apparaît sur GitHub</p>
+                        <p>• Vérifiez que votre site est accessible sur GitHub Pages</p>
+                        <p>• Testez une dernière fois toutes les fonctionnalités</p>
+                        <p>• <strong>🎉 Mission terminée !</strong></p>
+                    </div>
+                </div>
+                
+                <div class="alert">
+                    <strong>⚠️ Important :</strong> 
+                    Le fichier <code>evaluation.json</code> est obligatoire pour la validation de votre travail. 
+                    Sans ce fichier, votre évaluation ne pourra pas être prise en compte.
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button onclick="validateForm()" class="btn btn-secondary">
+                ✅ Valider le formulaire
+            </button>
+            <button onclick="generateJSON()" class="btn">
+                🔄 Générer JSON
+            </button>
+            <button onclick="copyJSON()" class="btn btn-success">
+                📋 Copier JSON
+            </button>
+            <button onclick="resetForm()" class="btn btn-secondary" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                🔄 Réinitialiser
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration des données
+        const QCM_DATA = {
+            debutant: [
+                {q: "Quelle méthode JavaScript permet de faire un appel API asynchrone moderne ?", options: ["fetch()", "call()", "request()", "api()"], correct: "fetch()", pts: 1},
+                {q: "Que signifie l'acronyme API ?", options: ["Application Programming Interface", "Automated Program Interface", "Advanced Programming Interface", "Application Process Interface"], correct: "Application Programming Interface", pts: 1},
+                {q: "Comment récupère-t-on un élément HTML par son ID en JavaScript ?", options: ["document.getElementById('monId')", "document.getElement('monId')", "getElementById('monId')", "document.find('#monId')"], correct: "document.getElementById('monId')", pts: 1}
+            ],
+            intermediaire: [
+                {q: "Comment gère-t-on une erreur avec la méthode fetch() ?", options: ["try...catch avec async/await", "error() callback", "fail() method", "exception handler"], correct: "try...catch avec async/await", pts: 2},
+                {q: "Quelle balise HTML est sémantiquement correcte pour afficher une citation ?", options: ["<blockquote>", "<cite>", "<quote>", "<div class='citation'>"], correct: "<blockquote>", pts: 2},
+                {q: "Que fait la commande 'git push origin main' ?", options: ["Envoie les commits locaux vers le repository distant", "Récupère les modifications du serveur", "Crée une nouvelle branche main", "Supprime les fichiers du repository"], correct: "Envoie les commits locaux vers le repository distant", pts: 2}
+            ],
+            avance: [
+                {q: "Que retourne l'API quotable.io dans sa réponse JSON ?", options: ["Un objet avec les propriétés content, author et length", "Du texte brut sans formatage", "Un fichier XML structuré", "Une image avec le texte de la citation"], correct: "Un objet avec les propriétés content, author et length", pts: 3},
+                {q: "Quelle est la différence principale entre .then() et async/await ?", options: ["async/await offre une syntaxe plus lisible pour le code asynchrone", ".then() est plus performant", "async/await ne gère pas les erreurs", "Il n'y a aucune différence fonctionnelle"], correct: "async/await offre une syntaxe plus lisible pour le code asynchrone", pts: 3},
+                {q: "Pourquoi utilise-t-on textContent plutôt que innerHTML pour afficher du texte utilisateur ?", options: ["Pour éviter les injections XSS et les failles de sécurité", "textContent est plus rapide", "innerHTML ne fonctionne pas avec du texte", "C'est une préférence de style de code"], correct: "Pour éviter les injections XSS et les failles de sécurité", pts: 3}
+            ]
+        };
+
+        const TECH_DATA = {
+            obligatoire: [
+                {id: "appel_api_fonctionnel", label: "📡 Appel API avec fetch() réussi", pts: 3},
+                {id: "affichage_citation", label: "📄 Affichage citation et auteur", pts: 2},
+                {id: "gestion_erreurs", label: "⚠️ Gestion des erreurs réseau", pts: 3},
+                {id: "design_responsive", label: "📱 Design responsive mobile/desktop", pts: 2},
+                {id: "interactivite_bouton", label: "🔄 Bouton nouvelle citation fonctionnel", pts: 2},
+                {id: "github_pages_deploye", label: "🚀 Site déployé sur GitHub Pages", pts: 3}
+            ],
+            bonus: [
+                {id: "partage_social", label: "📤 Partage social ou presse-papiers", pts: 2},
+                {id: "favoris_localstorage", label: "⭐ Système de favoris avec localStorage", pts: 3},
+                {id: "animations_css", label: "🎨 Animations et transitions CSS", pts: 1},
+                {id: "raccourcis_clavier", label: "⌨️ Raccourcis clavier (ex: Espace)", pts: 1},
+                {id: "accessibilite", label: "♿ Améliorations d'accessibilité", pts: 2}
+            ]
+        };
+
+        const ETAPES_DATA = [
+            {id: "etape_1_appel_api", label: "Étape 1: Implémentation de l'appel API"},
+            {id: "etape_2_affichage_dom", label: "Étape 2: Affichage des données dans le DOM"},
+            {id: "etape_3_gestion_erreurs", label: "Étape 3: Gestion des erreurs et cas d'exception"},
+            {id: "etape_4_evenements", label: "Étape 4: Événements et interactivité"},
+            {id: "bonus_fonctionnalites", label: "Bonus: Fonctionnalités avancées"}
+        ];
+
+        const CONCEPTS_DATA = [
+            {id: "fetch_api", label: "🌐 Fetch API"},
+            {id: "async_await", label: "⏳ Async/Await"},
+            {id: "manipulation_dom", label: "🎨 Manipulation DOM"},
+            {id: "gestion_erreurs", label: "⚠️ Gestion d'erreurs"},
+            {id: "event_listeners", label: "🖱️ Event Listeners"},
+            {id: "git_github", label: "📚 Git/GitHub"},
+            {id: "html_semantique", label: "📄 HTML Sémantique"},
+            {id: "css_responsive", label: "📱 CSS Responsive"}
+        ];
+
+        const OUTILS_DATA = [
+            {id: "formulaire_web", label: "📋 Formulaire web d'évaluation"},
+            {id: "editeur_code", label: "💻 VS Code / Éditeur de code"},
+            {id: "navigateur_dev", label: "🔧 DevTools navigateur (F12)"},
+            {id: "github_desktop", label: "🐙 GitHub Desktop"},
+            {id: "terminal", label: "⌨️ Terminal / Ligne de commande"},
+            {id: "documentation", label: "📖 Documentation officielle (MDN, etc.)"},
+            {id: "stack_overflow", label: "🤝 Stack Overflow"},
+            {id: "youtube", label: "📺 Tutoriels YouTube"},
+            {id: "aide_formateur", label: "👨‍🏫 Aide du formateur"},
+            {id: "entraide_etudiants", label: "👥 Entraide entre étudiants"},
+            {id: "presentation_atelier", label: "🎓 Présentation atelier (slides)"},
+            {id: "debug_guide", label: "🔧 Guide de débogage F12"},
+            {id: "script_indices", label: "💡 Script avec système d'indices"},
+            {id: "evaluation_form", label: "📊 Formulaire d'auto-évaluation"}
+        ];
+
+        // Variables globales
+        let formValidated = false;
+        let autoSaveTimer;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            generateQCM();
+            generateTechnical();
+            generateEtapes();
+            generateConcepts();
+            generateOutils();
+            loadData();
+            setupAutoSave();
+            updateProgress();
+        });
+
+        // Génération dynamique du QCM (SANS justifications)
+        function generateQCM() {
+            const container = document.getElementById('qcm-container');
+            let html = '';
+            let qIndex = 1;
+
+            Object.entries(QCM_DATA).forEach(([level, questions]) => {
+                const levelName = level.charAt(0).toUpperCase() + level.slice(1);
+                const totalPts = questions.reduce((sum, q) => sum + q.pts, 0);
+                html += `<h3>${levelName} (${totalPts} pts)</h3>`;
+                
+                questions.forEach((question, i) => {
+                    const isLongOptions = question.options.some(opt => opt.length > 30);
+                    const gridClass = isLongOptions ? 'radio-group' : 'compact-options';
+                    
+                    html += `<div class="qcm-question">
+                        <h4>Q${qIndex}. ${question.q} 
+                            <span style="color: #6b7280; font-weight: normal;">(${question.pts} pt${question.pts>1?'s':''})</span>
+                        </h4>
+                        <div class="${gridClass}">`;
+                    
+                    question.options.forEach(option => {
+                        // Mise en forme spéciale pour la Q5 (balises HTML)
+                        let displayOption = option;
+                        if (question.q.includes('balise HTML')) {
+                            displayOption = `<code style='font-family:monospace;background:#f3f4f6;padding:2px 6px;border-radius:4px;'>${option.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code>`;
+                        }
+                        html += `<label class="radio-item">
+                            <input type="radio" name="q${qIndex}" value="${option}" onchange="updateProgress()"> 
+                            <span style="flex: 1;">${displayOption}</span>
+                        </label>`;
+                    });
+                    
+                    html += `</div></div>`;
+                    qIndex++;
+                });
+            });
+            container.innerHTML = html;
+        }
+
+        // Génération des checkboxes techniques
+        function generateTechnical() {
+            ['obligatoire', 'bonus'].forEach(type => {
+                const container = document.getElementById(`${type}-container`);
+                container.innerHTML = TECH_DATA[type].map(item => 
+                    `<label class="checkbox-item" onclick="updateScore(); updateProgress();">
+                        <input type="checkbox" id="${item.id}" onchange="updateScore(); updateProgress();"> 
+                        <div>
+                            <strong>${item.label}</strong> 
+                            <div style="color: #6b7280; font-size: 0.875rem;">${item.pts} point${item.pts>1?'s':''}</div>
+                        </div>
+                    </label>`
+                ).join('');
+            });
+        }
+
+        // Génération des étapes de progression
+        function generateEtapes() {
+            const container = document.getElementById('etapes-container');
+            container.innerHTML = ETAPES_DATA.map(etape => 
+                `<div class="etape-item">
+                    <h4>${etape.label}</h4>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="${etape.id}_terminee" onchange="updateProgress()"> 
+                        <strong>Étape terminée</strong>
+                    </label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>😊 Difficulté ressentie</label>
+                            <select id="${etape.id}_difficulte_perçue" onchange="updateProgress()">
+                                <option value="">Évaluer...</option>
+                                <option value="Très facile">😊 Très facile</option>
+                                <option value="Facile">🙂 Facile</option>
+                                <option value="Moyen">😐 Moyen</option>
+                                <option value="Difficile">😓 Difficile</option>
+                                <option value="Très difficile">😵 Très difficile</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>⏱️ Temps approximatif</label>
+                            <select id="${etape.id}_temps_passe" onchange="updateProgress()">
+                                <option value="">Estimer...</option>
+                                <option value="< 5 min">⚡ Moins de 5 minutes</option>
+                                <option value="5-15 min">🏃 5 à 15 minutes</option>
+                                <option value="15-30 min">🚶 15 à 30 minutes</option>
+                                <option value="30-60 min">🐌 30 à 60 minutes</option>
+                                <option value="> 60 min">🐢 Plus de 60 minutes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>🆘 Aide nécessaire</label>
+                        <textarea id="${etape.id}_aide_necessaire" placeholder="Documentation consultée, aide du formateur, outils utilisés..." maxlength="300"></textarea>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        // Génération des concepts maîtrisés
+        function generateConcepts() {
+            const container = document.getElementById('concepts-container');
+            container.innerHTML = CONCEPTS_DATA.map(concept => 
+                `<div class="form-group">
+                    <label>${concept.label}</label>
+                    <select id="${concept.id}" onchange="updateProgress()">
+                        <option value="">Auto-évaluation...</option>
+                        <option value="Non maîtrisé">❌ Non maîtrisé</option>
+                        <option value="Partiellement maîtrisé">🟡 Partiellement maîtrisé</option>
+                        <option value="Bien maîtrisé">✅ Bien maîtrisé</option>
+                        <option value="Parfaitement maîtrisé">🌟 Parfaitement maîtrisé</option>
+                    </select>
+                </div>`
+            ).join('');
+        }
+
+        // Génération des outils utilisés
+        function generateOutils() {
+            const container = document.getElementById('outils-container');
+            container.innerHTML = OUTILS_DATA.map(outil => 
+                `<label class="checkbox-item">
+                    <input type="checkbox" id="${outil.id}" onchange="updateProgress()"> 
+                    <span>${outil.label}</span>
+                </label>`
+            ).join('');
+        }
+
+        // Calcul et affichage du score
+        function updateScore() {
+            let totalQCM = 0;
+            let totalTech = 0;
+            
+            // Score QCM
+            let qIndex = 1;
+            Object.values(QCM_DATA).flat().forEach(question => {
+                const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+                if (selected && selected.value === question.correct) totalQCM += question.pts;
+                qIndex++;
+            });
+            
+            // Score technique
+            [...TECH_DATA.obligatoire, ...TECH_DATA.bonus].forEach(item => {
+                const checkbox = document.getElementById(item.id);
+                if (checkbox && checkbox.checked) totalTech += item.pts;
+            });
+            
+            const totalScore = totalQCM + totalTech;
+            const note20 = Math.round(totalScore * 20 / 42);
+            
+            const obligatoireScore = TECH_DATA.obligatoire.reduce((total, item) => {
+                const checkbox = document.getElementById(item.id);
+                return total + (checkbox && checkbox.checked ? item.pts : 0);
+            }, 0);
+            
+            const bonusScore = TECH_DATA.bonus.reduce((total, item) => {
+                const checkbox = document.getElementById(item.id);
+                return total + (checkbox && checkbox.checked ? item.pts : 0);
+            }, 0);
+            
+            document.getElementById('score-display').innerHTML = `
+                <div style="font-size: 1.3rem; margin-bottom: 1rem;">
+                    Score Total: <strong>${totalScore}/42 points</strong> (${note20}/20)
+                </div>
+                <div class="score-details">
+                    <div class="score-item">
+                        <div style="font-weight: 600; color: #3b82f6;">QCM</div>
+                        <div>${totalQCM}/21 pts</div>
+                    </div>
+                    <div class="score-item">
+                        <div style="font-weight: 600; color: #10b981;">Obligatoire</div>
+                        <div>${obligatoireScore}/15 pts</div>
+                    </div>
+                    <div class="score-item">
+                        <div style="font-weight: 600; color: #f59e0b;">Bonus</div>
+                        <div>${bonusScore}/9 pts</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mise à jour de la barre de progression
+        function updateProgress() {
+            let totalFields = 0;
+            let filledFields = 0;
+            
+            // Compter les champs remplis
+            document.querySelectorAll('input, select, textarea').forEach(field => {
+                if (field.type !== 'button' && field.id) {
+                    totalFields++;
+                    if (field.type === 'checkbox' || field.type === 'radio') {
+                        if (field.checked) filledFields++;
+                    } else if (field.value.trim()) {
+                        filledFields++;
+                    }
+                }
+            });
+            
+            const progress = Math.round((filledFields / totalFields) * 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            updateScore();
+        }
+
+        // Validation du formulaire
+        function validateForm() {
+            const errors = [];
+            
+            // Vérifier QCM
+            let qIndex = 1;
+            Object.values(QCM_DATA).flat().forEach(() => {
+                const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+                if (!selected) {
+                    errors.push(`Question ${qIndex} non répondue`);
+                }
+                qIndex++;
+            });
+            
+            // Vérifier au moins une fonctionnalité technique
+            const anyTechChecked = [...TECH_DATA.obligatoire, ...TECH_DATA.bonus].some(item => {
+                const checkbox = document.getElementById(item.id);
+                return checkbox && checkbox.checked;
+            });
+            
+            if (!anyTechChecked) {
+                errors.push("Aucune fonctionnalité technique cochée");
+            }
+            
+            if (errors.length === 0) {
+                formValidated = true;
+                alert('✅ Formulaire validé avec succès ! Vous pouvez maintenant générer le JSON.');
+            } else {
+                alert('❌ Erreurs trouvées :\n' + errors.join('\n'));
+            }
+        }
+
+        // Génération JSON
+        function generateJSON() {
+            if (!formValidated) {
+                if (!confirm('⚠️ Formulaire non validé. Générer le JSON quand même ?')) {
+                    return;
+                }
+            }
+            
+            const data = {
+                etudiant: {
+                    nom: "[À REMPLIR PAR SCRIPT DE COLLECTE]",
+                    prenom: "[À REMPLIR PAR SCRIPT DE COLLECTE]", 
+                    classe: "BTS2-SIO-SLAM",
+                    date: "[À REMPLIR PAR SCRIPT DE COLLECTE]",
+                    duree_seance: "90min",
+                    github_repository: "[À REMPLIR PAR SCRIPT DE COLLECTE]",
+                    github_pages_url: "[À REMPLIR PAR SCRIPT DE COLLECTE]"
+                },
+                qcm_niveau_debutant: {},
+                qcm_niveau_intermediaire: {},
+                qcm_niveau_avance: {},
+                evaluation_technique: {
+                    fonctionnalites_implementees: {},
+                    bonus_optionnels: {}
+                },
+                autoévaluation_progression: {
+                    etapes_completees: {},
+                    concepts_maitrises: {},
+                    concepts_a_revoir: getValue('concepts_a_revoir').split(',').map(s => s.trim()).filter(s => s),
+                    difficultes_rencontrees: getValue('difficultes_rencontrees').split(',').map(s => s.trim()).filter(s => s),
+                    points_forts_identifies: getValue('points_forts_identifies').split(',').map(s => s.trim()).filter(s => s),
+                    ameliorations_souhaitees: getValue('ameliorations_souhaitees').split(',').map(s => s.trim()).filter(s => s)
+                },
+                reflexion_pedagogique: {
+                    temps_total_necessaire: getValue('temps_total_necessaire'),
+                    etape_la_plus_difficile: getValue('etape_la_plus_difficile'),
+                    etape_la_plus_interessante: getValue('etape_la_plus_interessante'),
+                    utilite_des_commentaires: getValue('utilite_des_commentaires'),
+                    clarte_des_instructions: getValue('clarte_des_instructions'),
+                    suggestions_amelioration: getValue('suggestions_amelioration'),
+                    niveau_satisfaction: getValue('niveau_satisfaction'),
+                    recommanderiez_exercice: getValue('recommanderiez_exercice')
+                },
+                evaluation_formateur: {
+                    qualite_code: { organisation: "", commentaires: "", bonnes_pratiques: "", note: "" },
+                    comprehension_concepts: { api_rest: "", javascript_asynchrone: "", manipulation_dom: "", note: "" },
+                    autonomie: { recherche_solutions: "", gestion_erreurs: "", debugging: "", note: "" },
+                    commentaires_generaux: "",
+                    points_a_ameliorer: [],
+                    felicitations: []
+                },
+                grille_notation: {
+                    qcm_debutant: { total_points: 3, points_obtenus: calculateQCMScore('debutant') },
+                    qcm_intermediaire: { total_points: 6, points_obtenus: calculateQCMScore('intermediaire') },
+                    qcm_avance: { total_points: 9, points_obtenus: calculateQCMScore('avance') },
+                    technique_obligatoire: { total_points: 15, points_obtenus: calculateTechniqueScore('obligatoire') },
+                    bonus_optionnel: { total_points: 9, points_obtenus: calculateTechniqueScore('bonus') },
+                    note_finale: { total_sur_20: calculateFinalScore(), appreciation: getAppreciation(calculateTotalScore()) }
+                },
+                meta_evaluation: {
+                    date_evaluation: new Date().toISOString().split('T')[0],
+                    evaluateur: getValue('evaluateur') || 'Auto-évaluation étudiant',
+                    duree_evaluation: getValue('duree_evaluation') + ' minutes',
+                    outils_utilises: getSelectedTools(),
+                    observations: getValue('observations')
+                }
+            };
+
+            // Remplir QCM (SANS justifications)
+            let qIndex = 1;
+            Object.entries(QCM_DATA).forEach(([level, questions]) => {
+                const sectionKey = `qcm_niveau_${level}`;
+                questions.forEach((question, i) => {
+                    const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+                    
+                    data[sectionKey][`q${qIndex}`] = {
+                        question: question.q,
+                        reponse: selected ? selected.value : '',
+                        options: question.options,
+                        points: question.pts,
+                        concept: getConceptForLevel(level)
+                    };
+                    qIndex++;
+                });
+            });
+
+            // Remplir technique
+            TECH_DATA.obligatoire.forEach(item => {
+                const checkbox = document.getElementById(item.id);
+                data.evaluation_technique.fonctionnalites_implementees[item.id] = {
+                    realise: checkbox ? checkbox.checked : false,
+                    points: item.pts,
+                    commentaire: ""
+                };
+            });
+
+            TECH_DATA.bonus.forEach(item => {
+                const checkbox = document.getElementById(item.id);
+                data.evaluation_technique.bonus_optionnels[item.id] = {
+                    realise: checkbox ? checkbox.checked : false,
+                    points: item.pts,
+                    commentaire: ""
+                };
+            });
+
+            // Remplir étapes et concepts
+            ETAPES_DATA.forEach(etape => {
+                data.autoévaluation_progression.etapes_completees[etape.id] = {
+                    terminee: getValue(`${etape.id}_terminee`),
+                    difficulte_perçue: getValue(`${etape.id}_difficulte_perçue`),
+                    temps_passe: getValue(`${etape.id}_temps_passe`),
+                    aide_necessaire: getValue(`${etape.id}_aide_necessaire`)
+                };
+            });
+
+            CONCEPTS_DATA.forEach(concept => {
+                data.autoévaluation_progression.concepts_maitrises[concept.id] = getValue(concept.id);
+            });
+
+            document.getElementById('json-output').textContent = JSON.stringify(data, null, 2);
+            
+            // Scroll vers le JSON
+            document.getElementById('export-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Fonctions utilitaires
+        function getValue(id) {
+            const element = document.getElementById(id);
+            if (!element) return '';
+            return element.type === 'checkbox' ? element.checked : element.value;
+        }
+
+        function getSelectedTools() {
+            return OUTILS_DATA.filter(outil => {
+                const checkbox = document.getElementById(outil.id);
+                return checkbox && checkbox.checked;
+            }).map(outil => outil.label);
+        }
+
+        function getConceptForLevel(level) {
+            const concepts = {
+                'debutant': 'API/DOM de base',
+                'intermediaire': 'JavaScript/Git intermédiaire', 
+                'avance': 'Sécurité/Bonnes pratiques'
+            };
+            return concepts[level] || 'Général';
+        }
+
+        function calculateQCMScore(niveau) {
+            let qIndex = 1;
+            let score = 0;
+            
+            Object.entries(QCM_DATA).forEach(([level, questions]) => {
+                if (level === niveau) {
+                    questions.forEach(question => {
+                        const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+                        if (selected && selected.value === question.correct) score += question.pts;
+                        qIndex++;
+                    });
+                } else {
+                    qIndex += questions.length;
+                }
+            });
+            
+            return score;
+        }
+
+        function calculateTechniqueScore(type) {
+            return TECH_DATA[type].reduce((total, item) => {
+                const checkbox = document.getElementById(item.id);
+                return total + (checkbox && checkbox.checked ? item.pts : 0);
+            }, 0);
+        }
+
+        function calculateTotalScore() {
+            let total = 0;
+            let qIndex = 1;
+            Object.values(QCM_DATA).flat().forEach(question => {
+                const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+                if (selected && selected.value === question.correct) total += question.pts;
+                qIndex++;
+            });
+            [...TECH_DATA.obligatoire, ...TECH_DATA.bonus].forEach(item => {
+                const checkbox = document.getElementById(item.id);
+                if (checkbox && checkbox.checked) total += item.pts;
+            });
+            return total;
+        }
+
+        function calculateFinalScore() {
+            return Math.round(calculateTotalScore() * 20 / 42);
+        }
+
+        function getAppreciation(score) {
+            const note20 = Math.round(score * 20 / 42);
+            if (note20 >= 18) return "🌟 Excellent";
+            if (note20 >= 16) return "😃 Très bien";
+            if (note20 >= 14) return "😊 Bien";
+            if (note20 >= 12) return "🙂 Assez bien";
+            if (note20 >= 10) return "😐 Passable";
+            return "😞 Insuffisant";
+        }
+
+        function copyJSON() {
+            const text = document.getElementById('json-output').textContent;
+            if (!text || text.includes('Cliquez')) {
+                alert('⚠️ Générez d\'abord le JSON !');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showAutoSaveIndicator('📋 JSON copié dans le presse-papiers !');
+            }).catch(() => {
+                alert('❌ Erreur de copie. Sélectionnez manuellement le texte.');
+            });
+        }
+
+        function resetForm() {
+            if (confirm('⚠️ Êtes-vous sûr de vouloir réinitialiser tout le formulaire ?')) {
+                localStorage.removeItem('evaluation-data');
+                location.reload();
+            }
+        }
+
+        // Auto-sauvegarde
+        function setupAutoSave() {
+            document.addEventListener('input', saveData);
+            document.addEventListener('change', saveData);
+        }
+
+        function saveData() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                const data = {};
+                document.querySelectorAll('input, select, textarea').forEach(el => {
+                    if (el.id) {
+                        if (el.type === 'checkbox') data[el.id] = el.checked;
+                        else data[el.id] = el.value;
+                    }
+                    if (el.name && el.type === 'radio' && el.checked) data[el.name] = el.value;
+                });
+                localStorage.setItem('evaluation-data', JSON.stringify(data));
+                showAutoSaveIndicator();
+            }, 1000);
+        }
+
+        function loadData() {
+            try {
+                const data = JSON.parse(localStorage.getItem('evaluation-data') || '{}');
+                Object.entries(data).forEach(([key, value]) => {
+                    const el = document.getElementById(key) || document.querySelector(`input[name="${key}"]`);
+                    if (el) {
+                        if (el.type === 'checkbox') el.checked = value;
+                        else if (el.type === 'radio' && el.value === value) el.checked = true;
+                        else el.value = value;
+                    }
+                });
+                updateScore();
+                updateProgress();
+            } catch (e) {
+                console.warn('Erreur chargement localStorage:', e);
+            }
+        }
+
+        function showAutoSaveIndicator(message = '💾 Sauvegardé') {
+            const indicator = document.getElementById('autoSaveIndicator');
+            indicator.textContent = message;
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

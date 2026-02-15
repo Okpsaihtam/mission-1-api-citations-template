@@ -1,0 +1,37 @@
+{
+  "name": "assignment-1-api-citations",
+  "version": "1.0.0",
+  "description": "Assignment 1 - Générateur de Citations avec API REST",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx live-server .",
+    "test": "echo \"Tests à implémenter\" && exit 0",
+    "validate": "npx html-validate index.html",
+    "deploy": "echo \"Déployé via GitHub Pages\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Classrooms/LSWSIO-BTS2-SLAM-2025-26/assignment-1-api-citations-template.git"
+  },
+  "keywords": [
+    "javascript",
+    "api",
+    "rest",
+    "citations",
+    "github-pages",
+    "bts-sio"
+  ],
+  "author": "LSWSIO BTS2 SLAM 2025-26",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.1",
+    "html-validate": "^8.7.4"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

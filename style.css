@@ -1,0 +1,362 @@
+/* ===== GÉNÉRATEUR DE CITATIONS - STYLES ===== */
+
+/* 🎨 Variables CSS pour une maintenance facile */
+:root {
+    --primary-color: #4a90e2;
+    --primary-dark: #2563eb;
+    --secondary-color: #64b5f6;
+    --success-color: #4caf50;
+    --error-color: #f44336;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --background: #ecf0f1;
+    --card-bg: #ffffff;
+    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.15);
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+}
+
+/* 🌐 Reset et styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: var(--text-primary);
+}
+
+/* 📦 Container principal */
+.container {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    max-width: 700px;
+    width: 100%;
+    padding: 40px;
+    animation: slideIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 📌 Header */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* 📝 Section citation */
+.citation-section {
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+/* ⏳ Loading */
+.loading {
+    text-align: center;
+}
+
+.spinner {
+    border: 4px solid var(--background);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading p {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* 💬 Citation container */
+.citation-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.citation-text {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    font-style: italic;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.citation-text::before {
+    content: '❝';
+    font-size: 3rem;
+    color: var(--primary-color);
+    position: absolute;
+    left: -30px;
+    top: -10px;
+    opacity: 0.3;
+}
+
+.citation-author {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-style: normal;
+    margin-top: 15px;
+}
+
+/* ❌ Error container */
+.error-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+/* 🔘 Boutons */
+.actions {
+    text-align: center;
+}
+
+button {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 12px 30px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    font-weight: 600;
+}
+
+.btn-nouvelle {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: var(--shadow-light);
+}
+
+.btn-nouvelle:hover:not(:disabled) {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-nouvelle:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-nouvelle:disabled {
+    background: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-retry {
+    background: var(--secondary-color);
+    color: white;
+    padding: 10px 25px;
+}
+
+.btn-retry:hover {
+    background: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+/* 🎁 Section bonus */
+.bonus-section {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 20px;
+}
+
+.btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* 👣 Footer */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--background);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color var(--transition-speed);
+}
+
+footer a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+/* 🎭 Classes utilitaires */
+.hidden {
+    display: none !important;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 25px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .citation-text {
+        font-size: 1.2rem;
+    }
+
+    .citation-text::before {
+        left: -20px;
+        font-size: 2rem;
+    }
+
+    .citation-author {
+        font-size: 1rem;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
+    .bonus-section {
+        flex-direction: column;
+    }
+
+    .btn-secondary {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 1.6rem;
+    }
+
+    .citation-text {
+        font-size: 1.1rem;
+    }
+
+    .citation-section {
+        min-height: 200px;
+    }
+}
+
+/* 🎨 Accessibilité - Focus visible */
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* 🌙 Mode sombre (optionnel - peut être activé avec prefers-color-scheme) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-primary: #ecf0f1;
+        --text-secondary: #bdc3c7;
+        --background: #2c3e50;
+        --card-bg: #34495e;
+    }
+
+    body {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    }
+}
